@@ -6,10 +6,13 @@ export const GET_ME = gql`
         _id
         username
         email
-        savedBooks {
+        savedBooks{
             bookId
-            author
+            [authors]
+            description
             title
+            image
+            link
         }
     }
 }
