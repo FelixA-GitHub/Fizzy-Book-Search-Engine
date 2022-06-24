@@ -3,25 +3,14 @@ const path = require('path');
 const db = require('./config/connection');
 const routes = require('./routes');
 const { ApolloServer, gql } = require('apollo-server-express');
+const { typeDefs, resolvers } = require('./schemas');
+const { authMiddleware } = require('./utils/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
 
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!',
-  },
-};
-
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, context: authMiddleware });
 
 server.applyMiddleware({ app });
 
@@ -32,8 +21,8 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
-
-app.use(routes);
+//needed??
+// app.use(routes);
 
 db.once('open', () => {
   app.listen(PORT, () => {
