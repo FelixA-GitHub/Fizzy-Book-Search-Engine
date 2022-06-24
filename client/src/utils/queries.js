@@ -1,7 +1,5 @@
 import { gql } from '@apollo/client';
 
-import { gql } from '@apollo/client';
-
 export const GET_ME = gql`
 {
     me {
@@ -10,7 +8,7 @@ export const GET_ME = gql`
         email
         savedBooks{
             bookId
-            [authors]
+            authors
             description
             title
             image
