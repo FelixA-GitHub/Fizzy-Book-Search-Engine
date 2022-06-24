@@ -51,7 +51,7 @@ const resolvers = {
             }
             throw new AuthenticationError('Cannot save book');
         },
-        deleteBook: async (parent, { user, params }) => {
+        removeBook: async (parent, { user, params }) => {
             if (!context.user) {
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: user._id },
