@@ -40,27 +40,27 @@ const resolvers = {
             const token = signToken(user);
             return { token, user };
         },
-        saveBook: async (parent, { user, body }, context) => {
+        saveBook: async (parent, { bookData }, context) => {
             if (context.user) {
-                const updatedUser = await User.findOneAndUpdate(
-                    { _id: user._id },
-                    { $addToSet: { savedBooks: body } },
-                    { new: true, runValidators: true }
-                );
-                return updatedUser;
-            }
-            throw new AuthenticationError('Cannot save book');
-        },
-        removeBook: async (parent, { user, params }) => {
-            if (!context.user) {
-                const updatedUser = await User.findOneAndUpdate(
-                    { _id: user._id },
-                    { $pull: { savedBooks: { bookId: params.bookId } } },
+                const updatedUser = await User.findByIdAndUpdate(
+                    { _id: context.user._id },
+                    { $push: { savedBooks: bookData } },
                     { new: true }
                 );
                 return updatedUser;
             }
-            throw new AuthenticationError('Cannot delete book');
+            throw new AuthenticationError('Please login');
+        },
+        removeBook: async (parent, { bookId }, context) => {
+            if (context.user) {
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: { bookId } } },
+                    { new: true }
+                );
+                return updatedUser;
+            }
+            throw new AuthenticationError('Please login');
         }
     }
 };
